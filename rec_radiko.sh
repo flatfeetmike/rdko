@@ -23,8 +23,8 @@ show_usage() {
   echo '                 /a/b/c = /a/b/c' 1>&2
   echo '                ./a/b/c = $PWD/a/b/c' 1>&2
   echo '           -f  Default file_name = channel_YYYYMMDD_HHMM_PID' 1>&2
-  echo '           -t  Default rec_minute = 1' 1>&2
-  echo '               60 = 1 hour, 0 = go on recording until stopped(control-C)' 1>&2
+  echo '           -t  seconds Default rec_sec = 1' 1>&2
+  echo '               3600 = 1 hour, 0 = go on recording until stopped(control-C)' 1>&2
   echo '           -s  Default starting_position = 00:00:00' 1>&2
   echo ' PLAY MODE' 1>&2
   echo "   `basename $0` -p [-t play_minute] channel" 1>&2
@@ -146,7 +146,7 @@ record() {
     --stop ${duration} \
     --flv "${wkdir}/${tempname}.flv"
 
-  ffmpeg -ss ${starting} -i "${wkdir}/${tempname}.flv" \
+  avconv -ss ${starting} -i "${wkdir}/${tempname}.flv" \
     -acodec copy "${wkdir}/${tempname}.m4a" && \
     rm -f "${wkdir}/${tempname}.flv"
 
@@ -251,7 +251,8 @@ if [ ! "${OPTION_p}" ]; then
 
   # Get Minute
   min=${VALUE_t:=1}
-  duration=`expr ${min} \* 60`
+  #duration=`expr ${min} \* 60`
+  duration=$min
 
   # Get Starting Position
   starting=${VALUE_s:='00:00:00'}
