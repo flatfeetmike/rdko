@@ -41,11 +41,16 @@ while (( i < ${progcount})) ; do
 	# create file name
 	rec_file=`echo "cat /radiko/stations/station/scd/progs/prog[${i}]/@ft" \
 	| xmllint --shell ${weektable} \
-	| sed -n -e "s/^.*ft=\"\(20..\)\(..\)\(..\)\(..\)\(..\).*/\1-\2-\3_\4\5/p" `
+	| sed -n -e "s/^.*ft=\"\(20..\)\(..\)\(..\)\(..\)\(..\).*/\1-\2-\3-\4\5/p" `
 	rec_file="${rec_file}_$title"
+	# directory name for recorded files
+	dir_name=`echo "cat /radiko/stations/station/scd/progs/prog[${i}]/@ft" \
+	| xmllint --shell ${weektable} \
+	| sed -n -e "s/^.*ft=\"\(20..\)\(..\)\(..\)\(..\)\(..\).*/\1-\2-\3/p" `
+	dir_name="/mnt/nas/Radiko/${dir_name}"
 
 	# atコマンド整形
-	at_command="/bin/bash /home/pi/bin/rec_radiko.sh -d /home/pi/radiko -f $rec_file -t $dur $stationID > /dev/null 2>&1"
+	at_command="/bin/bash /home/pi/bin/rec_radiko.sh -d $dir_name -f $rec_file -t $dur $stationID > /dev/null 2>&1"
 
 	# すでに同じ内容がatに登録されていないか
 	duplicate_flag=0
